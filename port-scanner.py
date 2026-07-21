@@ -41,3 +41,11 @@ class PortScanner():
         time_elapsed = time.time() - start
         print(f"Open Ports on {ip}: [{open_ports}]")
 
+
+async def main():
+    portScanner = PortScanner("192.168.133.1")
+
+    await portScanner.scan_ports("192.168.133.1", COMMON_PORTS)
+
+if __name__ == "__main__":
+    asyncio.run(main())
