@@ -39,12 +39,15 @@ class PortScanner():
 
         open_ports = sorted(p for p in results if p is not None)
         time_elapsed = time.time() - start
-        print(f"Open Ports on {ip}: [{open_ports}]")
+        print(f"\nOpen Ports on {ip}: [{open_ports}] \n"
+              f"Time Taken [{time_elapsed:.2f}s]\n"
+              f"Scanned [{len(ports)}] ports \n"
+              f"[{len(open_ports)}/{len(ports)}] ports open")
 
 
 async def main():
     portScanner = PortScanner("192.168.133.1")
-
+    print(time.ctime())
     await portScanner.scan_ports("192.168.133.1", COMMON_PORTS)
 
 if __name__ == "__main__":
