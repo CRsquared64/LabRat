@@ -32,23 +32,34 @@ class PortScanner():
             except (asyncio.TimeoutError, ConnectionRefusedError, OSError):
                 return None
 
-    async def scan_ports(self, ip , ports):
+    async def scan_ports(self , ports):
         start = time.time()
-        tasks = [self.scan_port(ip, p) for p in ports]
+        tasks = [self.scan_port(self.ip, p) for p in ports]
         results = await asyncio.gather(*tasks)
 
         open_ports = sorted(p for p in results if p is not None)
         time_elapsed = time.time() - start
-        print(f"\nOpen Ports on {ip}: [{open_ports}] \n"
+        print(f"\nOpen Ports on {self.ip}: [{open_ports}] \n"
               f"Time Taken [{time_elapsed:.2f}s]\n"
               f"Scanned [{len(ports)}] ports \n"
               f"[{len(open_ports)}/{len(ports)}] ports open")
+
+    async def scan_common_ports(self):
+        print(f'Estimated Time [{len(COMMON_PORTS)/self.concurrency * self.timeout}]')
+        await self.scan_ports(COMMON_PORTS)
+
+    async def full_port_scan(self, min=1, max=65536):
+        print(f'Estimated Time [{max/self.concurrency * self.timeout}]')
+
+        await self.scan_ports(range(min, max+1))
+
+
 
 
 async def main():
     portScanner = PortScanner("192.168.133.1")
     print(time.ctime())
-    await portScanner.scan_ports("192.168.133.1", COMMON_PORTS)
 
+    await portScanner.scan_common_ports()
 if __name__ == "__main__":
     asyncio.run(main())
